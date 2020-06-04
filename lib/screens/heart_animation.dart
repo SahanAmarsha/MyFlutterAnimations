@@ -64,13 +64,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                 ),
               )
           )
-
-//        child: Text('Animation', style: TextStyle(
-//            fontWeight: FontWeight.bold,
-//            fontSize: 40,
-//            color: Color.fromRGBO(0, 51, 102, 1.0)
-//        ),
-//        ),
       ),
 
       floatingActionButtonLocation:
