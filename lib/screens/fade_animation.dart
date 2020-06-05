@@ -8,7 +8,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin{
 
   AnimationController _controller;
-
   Animation _myAnimation;
 
   @override
@@ -22,6 +21,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     );
     _myAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
 
+    //---looping the animation--- (if you don't want looping, please remove this)
     _controller.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
         _controller.reverse();

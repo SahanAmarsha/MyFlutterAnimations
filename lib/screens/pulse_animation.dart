@@ -8,7 +8,6 @@ class PulseAnimation extends StatefulWidget {
 class _PulseAnimationState extends State<PulseAnimation> with SingleTickerProviderStateMixin{
 
   AnimationController _controller;
-
   Animation<Size> _myAnimation;
 
   @override
