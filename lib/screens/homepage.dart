@@ -18,15 +18,16 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   void initState() {
     // TODO: implement initState
     super.initState();
-    _controller =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
-    _myAnimation = Tween(end: 1.0, begin: 0.0).animate(_controller)
-      ..addListener(() {
-        setState(() {});
-      })
-      ..addStatusListener((status) {
-        _animationStatus = status;
-      });
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1000),
+    );
+
+    _myAnimation = Tween(end: 0.15, begin: 0.0)
+        .animate(
+        CurvedAnimation(parent: _controller, curve: Curves.bounceIn)
+    );
+
   }
 
   @override
@@ -44,20 +45,17 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       ),
 
       body: Center(
-          child: Transform(
-            alignment: FractionalOffset.center,
-            transform: Matrix4.identity()
-              ..setEntry(3, 2, 0.002)
-              ..rotateX(pi*(_myAnimation.value)),
+          child: RotationTransition(
+            turns: _myAnimation,
             child: Container(
-              color: Colors.blueAccent,
               width: 200,
               height: 200,
-              child: Icon(
-                Icons.accessibility_new,
-                color: Colors.white,
-                size: 50,
-              ),
+              child: Center(
+                child: Text('Animation', style: TextStyle(
+                  fontSize: 40,
+
+                ),),
+              )
             ),
           )
       ),
@@ -69,11 +67,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       FloatingActionButton(
         child: Icon(Icons.play_arrow),
         onPressed: (){
-          if (_animationStatus == AnimationStatus.dismissed) {
+
             _controller.forward();
-          } else {
-            _controller.reverse();
-          }
+
         },
       ),
     );

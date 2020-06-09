@@ -9,6 +9,7 @@ class _PulseAnimationState extends State<PulseAnimation> with SingleTickerProvid
 
   AnimationController _controller;
   Animation<Size> _myAnimation;
+  AnimationStatus _animationStatus = AnimationStatus.dismissed;
 
   @override
   void initState() {
@@ -17,20 +18,21 @@ class _PulseAnimationState extends State<PulseAnimation> with SingleTickerProvid
     _controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1000),
-    )..addStatusListener((AnimationStatus status) {
-      if (status == AnimationStatus.completed) {
-        _controller.repeat();
-      }
-    });
+    );
 
     _myAnimation = Tween<Size>(
         begin: Size(100, 100),
         end:  Size(120, 120)
     ).animate(
         CurvedAnimation(parent: _controller, curve: Curves.bounceIn)
-    );
+    )..addListener(() {
+      setState(() {});
+    })
+      ..addStatusListener((status) {
+        _animationStatus = status;
+      });
 
-     }
+  }
 
   @override
   void dispose() {
@@ -71,7 +73,11 @@ class _PulseAnimationState extends State<PulseAnimation> with SingleTickerProvid
       FloatingActionButton(
         child: Icon(Icons.play_arrow),
         onPressed: (){
-          _controller.forward();
+          if (_animationStatus == AnimationStatus.dismissed) {
+            _controller.forward();
+          } else {
+            _controller.reverse();
+          }
         },
       ),
     );
