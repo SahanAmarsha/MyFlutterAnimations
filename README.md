@@ -6,7 +6,9 @@ I have written a blog post about this project. Check it out by this link.
 
 - There are 6 animations included in this project.
 1. FadeIn/FadeOut
+
 ![Alt Text](https://media.giphy.com/media/hSdkhXHGBETx0dT63E/giphy.gif)
+
 2. Pulse/Resize
 3. Slide
 4. Bounce
