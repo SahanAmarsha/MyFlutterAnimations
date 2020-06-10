@@ -84,11 +84,11 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       FloatingActionButton(
         child: Icon(Icons.play_arrow),
         onPressed: (){
-              if (_animationStatus == AnimationStatus.dismissed) {
-                _controller.forward();
-              } else {
-                _controller.reverse();
-              }
+          if (_animationStatus == AnimationStatus.dismissed) {
+            _controller.forward();
+          } else {
+            _controller.reverse();
+          }
         },
       ),
     );

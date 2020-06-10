@@ -45,6 +45,7 @@ flutter:
     - assets/images/heart.png
     - assets/images/ghost.png
     - assets/images/sample-image.png
+    - assets/images/bounce-ball.png
 #    - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
