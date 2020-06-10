@@ -11,18 +11,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin{
 
-  int x =1;
-
   AnimationController _controller;
   Animation<double> _slideAnimation;
-  AnimationStatus _animationStatus = AnimationStatus.dismissed;
-
-
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-  }
 
   @override
   void initState() {
@@ -30,17 +20,18 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 500),
+      duration: Duration(milliseconds: 1000),
     );
 
-
-    _slideAnimation = Tween(begin: 100.0, end: 50.0).animate(
+    _slideAnimation = Tween(begin: 200.0, end: 120.0).animate(
       CurvedAnimation(
         parent: _controller,
         curve: Interval(0.0, 1.0, curve: Curves.elasticIn),
       ),
-    )..addStatusListener((status) {
-      _animationStatus = status;
+    )..addStatusListener((AnimationStatus status) {
+      if (status == AnimationStatus.completed) {
+        _controller.repeat(reverse: true);
+      }
     });
 
   }
@@ -64,7 +55,10 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           builder: (ctx, ch) =>  Container(
             width: 100,
             height: 100,
-
+            margin: EdgeInsets.only(
+                top: _slideAnimation.value,
+                left: 125
+            ),
             decoration: BoxDecoration(
                 image: new DecorationImage(
                     image: new AssetImage(
@@ -84,11 +78,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       FloatingActionButton(
         child: Icon(Icons.play_arrow),
         onPressed: (){
-          if (_animationStatus == AnimationStatus.dismissed) {
-            _controller.forward();
-          } else {
-            _controller.reverse();
-          }
+          _controller.forward();
         },
       ),
     );

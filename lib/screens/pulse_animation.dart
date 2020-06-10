@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class PulseAnimation extends StatefulWidget {
+class MyHomePage extends StatefulWidget {
   @override
-  _PulseAnimationState createState() => _PulseAnimationState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _PulseAnimationState extends State<PulseAnimation> with SingleTickerProviderStateMixin{
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin{
 
   AnimationController _controller;
   Animation<Size> _myAnimation;
@@ -19,7 +19,7 @@ class _PulseAnimationState extends State<PulseAnimation> with SingleTickerProvid
       duration: Duration(milliseconds: 1000),
     )..addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
-        _controller.repeat();
+        _controller.repeat(reverse: true);
       }
     });
 

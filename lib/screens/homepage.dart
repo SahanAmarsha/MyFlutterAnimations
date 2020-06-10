@@ -1,28 +1,14 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
-
 }
 
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin{
 
-  int x =1;
-
   AnimationController _controller;
-  Animation<double> _slideAnimation;
-  AnimationStatus _animationStatus = AnimationStatus.dismissed;
-
-
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-  }
+  Animation<Size> _myAnimation;
 
   @override
   void initState() {
@@ -30,18 +16,19 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 500),
-    );
-
-
-    _slideAnimation = Tween(begin: 100.0, end: 50.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Interval(0.0, 1.0, curve: Curves.elasticIn),
-      ),
-    )..addStatusListener((status) {
-      _animationStatus = status;
+      duration: Duration(milliseconds: 1000),
+    )..addStatusListener((AnimationStatus status) {
+      if (status == AnimationStatus.completed) {
+        _controller.repeat(reverse: true);
+      }
     });
+
+    _myAnimation = Tween<Size>(
+        begin: Size(100, 100),
+        end:  Size(120, 120)
+    ).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.bounceIn)
+    );
 
   }
 
@@ -59,23 +46,23 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         title: Text("Flutter Animations"),
       ),
 
-      body:
-      AnimatedBuilder(animation: _slideAnimation,
-          builder: (ctx, ch) =>  Container(
-            width: 100,
-            height: 100,
+      body: Center(
+          child:
+          AnimatedBuilder(animation: _myAnimation,
+              builder: (ctx, ch) =>  Container(
+                width: _myAnimation.value.width,
+                height: _myAnimation.value.height,
 
-            decoration: BoxDecoration(
-                image: new DecorationImage(
-                    image: new AssetImage(
-                      'assets/images/bounce-ball.png',
+                decoration: BoxDecoration(
+                    image: new DecorationImage(
+                        image: new AssetImage(
+                          'assets/images/heart.png',
+                        )
                     )
-                )
-            ),
+                ),
+              )
           )
       ),
-
-
 
       floatingActionButtonLocation:
       FloatingActionButtonLocation.centerFloat,
@@ -84,11 +71,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       FloatingActionButton(
         child: Icon(Icons.play_arrow),
         onPressed: (){
-              if (_animationStatus == AnimationStatus.dismissed) {
-                _controller.forward();
-              } else {
-                _controller.reverse();
-              }
+          _controller.forward();
         },
       ),
     );
