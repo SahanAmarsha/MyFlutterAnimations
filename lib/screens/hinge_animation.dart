@@ -1,15 +1,26 @@
-import 'package:flutter/material.dart';
+import 'dart:math';
 
-class PulseAnimation extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+
+class MyHomePage extends StatefulWidget {
   @override
-  _PulseAnimationState createState() => _PulseAnimationState();
+  _MyHomePageState createState() => _MyHomePageState();
+
 }
 
-class _PulseAnimationState extends State<PulseAnimation> with SingleTickerProviderStateMixin{
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin{
 
   AnimationController _controller;
-  Animation<Size> _myAnimation;
-  AnimationStatus _animationStatus = AnimationStatus.dismissed;
+  Animation _rotateAnimation;
+  Animation<double> _slideAnimation;
+  Animation<double> _opacityAnimation;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
 
   @override
   void initState() {
@@ -17,20 +28,30 @@ class _PulseAnimationState extends State<PulseAnimation> with SingleTickerProvid
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1000),
+      duration: Duration(milliseconds: 2000),
     );
 
-    _myAnimation = Tween<Size>(
-        begin: Size(100, 100),
-        end:  Size(120, 120)
-    ).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.bounceIn)
-    )..addListener(() {
-      setState(() {});
-    })
-      ..addStatusListener((status) {
-        _animationStatus = status;
-      });
+    _rotateAnimation = Tween(end: 0.15, begin: 0.0)
+        .animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(0.0, 0.5, curve: Curves.bounceInOut),
+      ),
+    );
+
+    _slideAnimation = Tween(begin: 100.0, end: 600.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
+      ),
+    );
+
+    _opacityAnimation = Tween(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
+      ),
+    );
 
   }
 
@@ -48,22 +69,28 @@ class _PulseAnimationState extends State<PulseAnimation> with SingleTickerProvid
         title: Text("Flutter Animations"),
       ),
 
-      body: Center(
-          child:
-          AnimatedBuilder(animation: _myAnimation,
-              builder: (ctx, ch) =>  Container(
-                width: _myAnimation.value.width,
-                height: _myAnimation.value.height,
-
-                decoration: BoxDecoration(
-                    image: new DecorationImage(
-                        image: new AssetImage(
-                          'assets/images/heart.png',
-                        )
-                    )
-                ),
-              )
-          )
+      body:
+      AnimatedBuilder(
+        animation: _slideAnimation,
+        builder: (ctx, ch) => Container(
+          width: 200,
+          height: 100,
+          padding: EdgeInsets.all(0),
+          margin: EdgeInsets.only(
+            left: 75,
+            top: _slideAnimation.value,
+          ),
+          child: RotationTransition(
+            turns: _rotateAnimation,
+            child: Center(
+              child: Text('Animation', style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromRGBO(0, 0, 128, _opacityAnimation.value)
+              ),),
+            ),
+          ),
+        ),
       ),
 
       floatingActionButtonLocation:
@@ -73,11 +100,7 @@ class _PulseAnimationState extends State<PulseAnimation> with SingleTickerProvid
       FloatingActionButton(
         child: Icon(Icons.play_arrow),
         onPressed: (){
-          if (_animationStatus == AnimationStatus.dismissed) {
-            _controller.forward();
-          } else {
-            _controller.reverse();
-          }
+          _controller.forward();
         },
       ),
     );

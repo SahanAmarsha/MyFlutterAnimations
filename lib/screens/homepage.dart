@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -11,8 +12,15 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin{
 
   AnimationController _controller;
-  Animation _myAnimation;
-  AnimationStatus _animationStatus = AnimationStatus.dismissed;
+  Animation _rotateAnimation;
+  Animation<double> _slideAnimation;
+  Animation<double> _opacityAnimation;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
 
   @override
   void initState() {
@@ -20,12 +28,29 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1000),
+      duration: Duration(milliseconds: 2000),
     );
 
-    _myAnimation = Tween(end: 0.15, begin: 0.0)
+    _rotateAnimation = Tween(end: 0.15, begin: 0.0)
         .animate(
-        CurvedAnimation(parent: _controller, curve: Curves.bounceIn)
+      CurvedAnimation(
+          parent: _controller,
+          curve: Interval(0.0, 0.5, curve: Curves.bounceInOut),
+      ),
+    );
+
+    _slideAnimation = Tween(begin: 100.0, end: 600.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
+      ),
+    );
+
+    _opacityAnimation = Tween(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
+      ),
     );
 
   }
@@ -44,20 +69,28 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         title: Text("Flutter Animations"),
       ),
 
-      body: Center(
+      body:
+      AnimatedBuilder(
+        animation: _slideAnimation,
+        builder: (ctx, ch) => Container(
+          width: 200,
+          height: 100,
+          padding: EdgeInsets.all(0),
+          margin: EdgeInsets.only(
+            left: 75,
+            top: _slideAnimation.value,
+          ),
           child: RotationTransition(
-            turns: _myAnimation,
-            child: Container(
-              width: 200,
-              height: 200,
-              child: Center(
-                child: Text('Animation', style: TextStyle(
+            turns: _rotateAnimation,
+            child: Center(
+              child: Text('Animation', style: TextStyle(
                   fontSize: 40,
-
-                ),),
-              )
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromRGBO(0, 0, 128, _opacityAnimation.value)
+              ),),
             ),
-          )
+          ),
+        ),
       ),
 
       floatingActionButtonLocation:
@@ -68,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         child: Icon(Icons.play_arrow),
         onPressed: (){
 
-            _controller.forward();
+          _controller.forward();
 
         },
       ),
