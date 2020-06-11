@@ -30,8 +30,11 @@ I have written a blog post about this project. Check it out by this link.
 
 ![Hinge Animation](https://media.giphy.com/media/VHfRHJlBCLdUd5CaFQ/giphy.gif)
 
-- I have created 6 different dart files to define these animations. 
+- Under lib/screens folder, I have created 6 different dart files to define these animations. 
 
 - Pick an animation that you want to try out. Copy and paste the code in that file into **homepage.dart**  file.
 
 - Run the project on your IDE.
+
+## Try Something New
+Simply fork this project into your github profile. Try to implement something new.
